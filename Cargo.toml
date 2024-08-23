@@ -25,7 +25,7 @@ panic = "abort"
 strip = "symbols"
 
 [workspace]
-members = ["echor"]
+members = [ "catr","echor" ]
 
 [[bin]]
 name = "true"

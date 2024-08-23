@@ -1,9 +1,9 @@
-use clap::{Arg, Command};
+use clap::{Arg, ArgAction, Command};
 
 fn main() {
     let matches = Command::new("echor")
         .version("0.1.0")
-        .author("Matt Cook <matt@mattcook.dev")
+        .author("Matt Cook <matt@mattcook.dev>")
         .about("Rust echo")
         .arg(
             Arg::new("text")
@@ -14,21 +14,18 @@ fn main() {
         )
         .arg(
             Arg::new("omit_newline")
-                .help("Do not print newline")
-                .num_args(0)
-                .short('n'),
+                .short('n')
+                .action(ArgAction::SetTrue)
+                .help("Do not print newline"),
         )
         .get_matches();
 
-    let text = matches
-        .get_many::<String>("text")
-        .unwrap()
-        .map(String::to_owned)
-        .collect::<Vec<_>>();
-    let omit_newline = matches.get_one::<bool>("omit_newline").unwrap();
-    print!(
-        "{}{}",
-        text.join(" "),
-        if *omit_newline { "" } else { "\n" }
-    );
+    let text: Vec<String> = matches
+        .get_many("text")
+        .expect("text is required")
+        .cloned()
+        .collect();
+
+    let omit_newline = matches.get_flag("omit_newline");
+    print!("{}{}", text.join(" "), if omit_newline { "" } else { "\n" });
 }
