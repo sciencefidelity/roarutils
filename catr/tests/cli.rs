@@ -6,6 +6,7 @@ use std::fs;
 
 const PRG: &str = "catr";
 const EMPTY: &str = "tests/inputs/empty.txt";
+const TABS: &str = "tests/inputs/tabs.txt";
 const FOX: &str = "tests/inputs/fox.txt";
 const SPIDERS: &str = "tests/inputs/spiders.txt";
 const BUSTLE: &str = "tests/inputs/the-bustle.txt";
@@ -93,6 +94,15 @@ fn bustle_stdin_b() -> Result<()> {
 }
 
 #[test]
+fn bustle_stdin_ends() -> Result<()> {
+    run_stdin(
+        BUSTLE,
+        &["-E", "-"],
+        "tests/expected/the-bustle.txt.E.stdin.out",
+    )
+}
+
+#[test]
 fn empty() -> Result<()> {
     run(&[EMPTY], "tests/expected/empty.txt.out")
 }
@@ -108,6 +118,21 @@ fn empty_b() -> Result<()> {
 }
 
 #[test]
+fn empty_ends() -> Result<()> {
+    run(&["-E", EMPTY], "tests/expected/empty.txt.E.out")
+}
+
+#[test]
+fn tabs() -> Result<()> {
+    run(&["-T", TABS], "tests/expected/tabs.txt.T.out")
+}
+
+#[test]
+fn nonprinting() -> Result<()> {
+    run(&["-v", BUSTLE], "tests/expected/the-bustle.txt.v.out")
+}
+
+#[test]
 fn fox() -> Result<()> {
     run(&[FOX], "tests/expected/fox.txt.out")
 }
@@ -120,6 +145,11 @@ fn fox_n() -> Result<()> {
 #[test]
 fn fox_b() -> Result<()> {
     run(&["-b", FOX], "tests/expected/fox.txt.b.out")
+}
+
+#[test]
+fn fox_ends() -> Result<()> {
+    run(&["-E", FOX], "tests/expected/fox.txt.E.out")
 }
 
 #[test]
@@ -141,6 +171,14 @@ fn spiders_b() -> Result<()> {
 }
 
 #[test]
+fn spiders_ends() -> Result<()> {
+    run(
+        &["--show-ends", SPIDERS],
+        "tests/expected/spiders.txt.E.out",
+    )
+}
+
+#[test]
 fn bustle() -> Result<()> {
     run(&[BUSTLE], "tests/expected/the-bustle.txt.out")
 }
@@ -156,6 +194,11 @@ fn bustle_b() -> Result<()> {
 }
 
 #[test]
+fn bustle_ends() -> Result<()> {
+    run(&["-E", BUSTLE], "tests/expected/the-bustle.txt.E.out")
+}
+
+#[test]
 fn all() -> Result<()> {
     run(&[FOX, SPIDERS, BUSTLE], "tests/expected/all.out")
 }
@@ -168,4 +211,9 @@ fn all_n() -> Result<()> {
 #[test]
 fn all_b() -> Result<()> {
     run(&[FOX, SPIDERS, BUSTLE, "-b"], "tests/expected/all.b.out")
+}
+
+#[test]
+fn all_ends() -> Result<()> {
+    run(&[FOX, SPIDERS, BUSTLE, "-E"], "tests/expected/all.E.out")
 }
