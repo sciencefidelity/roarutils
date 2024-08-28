@@ -7,6 +7,7 @@ use std::io::{self, BufRead, BufReader};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug)]
 pub struct Config {
     files: Vec<String>,
@@ -17,6 +18,9 @@ pub struct Config {
     show_tabs: bool,
 }
 
+/// # Errors
+///
+/// Will return `Err` if the file(s) fail to open.
 pub fn run(config: Config) -> MyResult<()> {
     let mut line_num = 0;
     for filename in config.files {
@@ -29,20 +33,20 @@ pub fn run(config: Config) -> MyResult<()> {
                         line.push('$');
                     }
                     if config.show_tabs {
-                        line = line.replace("\t", "^I");
+                        line = line.replace('\t', "^I");
                     }
                     if config.number_lines {
                         line_num += 1;
                         println!("{line_num:>6}\t{line}");
                     } else if config.number_nonblank_lines {
-                        if !line.is_empty() {
+                        if line.is_empty() {
+                            println!();
+                        } else {
                             line_num += 1;
                             println!("{line_num:>6}\t{line}");
-                        } else {
-                            println!();
                         }
                     } else {
-                        println!("{}", line);
+                        println!("{line}");
                     }
                 }
             }
@@ -51,6 +55,14 @@ pub fn run(config: Config) -> MyResult<()> {
     Ok(())
 }
 
+/// # Errors
+///
+/// Cannot return error.
+///
+/// # Panics
+///
+/// Will panic if required args are missing.
+#[allow(clippy::too_many_lines)]
 pub fn get_args() -> MyResult<Config> {
     let matches = Command::new("catr")
         .version("0.1.0")
