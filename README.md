@@ -1,3 +1,3 @@
 # roarutils
 
-Command line hacking for education.
+Educational Command line hacking.

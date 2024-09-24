@@ -6,9 +6,9 @@ resolver = "2"
 version = "0.1.0"
 edition = "2021"
 authors = ["Matt Cook <matt@mattcook.dev>"]
-description = "Command line hacking for entertainment"
+description = "Educational command line hacking"
 readme = "README.md"
-repository = "https://github.com/sciencefidelity/rawrutils"
+repository = "https://github.com/sciencefidelity/roarrutils"
 license = "MIT or Apache-2.0"
 
 [workspace.lints.rust]
