@@ -1,10 +1,11 @@
+use std::fs;
+
 use anyhow::Result;
 use assert_cmd::Command;
 use predicates::prelude::*;
 use rand::{distributions::Alphanumeric, Rng};
-use std::fs;
 
-const PRG: &str = "catr";
+const PRG: &str = "cat";
 const EMPTY: &str = "tests/inputs/empty.txt";
 const TABS: &str = "tests/inputs/tabs.txt";
 const FOX: &str = "tests/inputs/fox.txt";

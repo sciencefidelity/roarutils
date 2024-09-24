@@ -1,7 +1,7 @@
 use clap::{Arg, ArgAction, Command};
 
 fn main() {
-    let matches = Command::new("echor")
+    let matches = Command::new("echo")
         .version("0.1.0")
         .author("Matt Cook <matt@mattcook.dev>")
         .about("Rust echo")

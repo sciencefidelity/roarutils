@@ -1,7 +1,8 @@
 #![allow(clippy::unwrap_used)]
+use std::fs;
+
 use assert_cmd::Command;
 use predicates::prelude::*;
-use std::fs;
 
 type TestResult = Result<(), Box<dyn std::error::Error>>;
 
