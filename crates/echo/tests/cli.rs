@@ -8,7 +8,7 @@ type TestResult = Result<(), Box<dyn std::error::Error>>;
 
 #[test]
 fn dies_no_args() -> TestResult {
-    let mut cmd = Command::cargo_bin("echor")?;
+    let mut cmd = Command::cargo_bin("echo")?;
     cmd.assert()
         .failure()
         .stderr(predicate::str::contains("Usage"));
@@ -17,7 +17,7 @@ fn dies_no_args() -> TestResult {
 
 #[test]
 fn runs() {
-    let mut cmd = Command::cargo_bin("echor").unwrap();
+    let mut cmd = Command::cargo_bin("echo").unwrap();
     cmd.arg("hello").assert().success();
 }
 
@@ -43,7 +43,7 @@ fn hello2_no_newline() -> TestResult {
 
 fn run(args: &[&str], expected_file: &str) -> TestResult {
     let expected = fs::read_to_string(expected_file)?;
-    let mut cmd = Command::cargo_bin("echor")?;
+    let mut cmd = Command::cargo_bin("echo")?;
     cmd.args(args).assert().success().stdout(expected);
     Ok(())
 }
