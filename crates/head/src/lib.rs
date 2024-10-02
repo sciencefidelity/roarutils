@@ -1,8 +1,11 @@
 #![allow(dead_code, clippy::missing_errors_doc, clippy::missing_panics_doc)]
-use std::io::Result;
+use std::io::{self, BufRead, BufReader};
+use std::{error::Error, fs::File};
 
 use clap::{value_parser, Arg, Command};
 use indoc::indoc;
+
+type HeadResult<T> = Result<T, Box<dyn Error>>;
 
 #[derive(Debug)]
 pub struct Config {
@@ -11,9 +14,21 @@ pub struct Config {
     bytes: Option<u64>,
 }
 
-pub fn run(config: &Config) -> Result<()> {
-    println!("{config:?}");
+pub fn run(config: Config) -> HeadResult<()> {
+    for filename in config.files {
+        match open(&filename) {
+            Err(err) => eprintln!("{filename}: {err}"),
+            Ok(_file) => println!("Opened {}", filename),
+        }
+    }
     Ok(())
+}
+
+fn parse_positive_int(val: &str) -> HeadResult<usize> {
+    match val.parse() {
+        Ok(0) | Err(_) => Err(val.into()),
+        Ok(n) => Ok(n),
+    }
 }
 
 #[must_use]
@@ -26,6 +41,7 @@ pub fn get_args() -> Config {
             With more than one FILE, precede each with a header giving the file name.
 
             With no FILE, or when FILE is -, read standard input.
+
             Mandatory arguments to long options are mandatory for short options too.
         "})
         .help_template(indoc! {"
@@ -50,6 +66,18 @@ pub fn get_args() -> Config {
                 .num_args(1..),
         )
         .arg(
+            Arg::new("bytes")
+                .short('c')
+                .long("bytes")
+                .help(indoc! {"
+                    print the first NUM bytes of each file;
+                      with the leading '-', print all but the last
+                      NUM bytes of each file
+                "})
+                .value_parser(value_parser!(u64).range(1..))
+                .conflicts_with("lines"),
+        )
+        .arg(
             Arg::new("lines")
                 .short('n')
                 .long("lines")
@@ -61,18 +89,6 @@ pub fn get_args() -> Config {
                 "})
                 .value_parser(value_parser!(u64).range(1..))
                 .default_value("10"),
-        )
-        .arg(
-            Arg::new("bytes")
-                .short('c')
-                .long("bytes")
-                .help(indoc! {"
-                    print the first NUM bytes of each file;
-                      with the leading '-', print all but the last
-                      NUM bytes of each file
-                "})
-                .value_parser(value_parser!(u64).range(1..))
-                .conflicts_with("lines"),
         )
         .get_matches();
 
@@ -90,4 +106,26 @@ pub fn get_args() -> Config {
         lines,
         bytes,
     }
+}
+
+fn open(filename: &str) -> HeadResult<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
+    }
+}
+
+#[test]
+fn test_parse_positive_int() {
+    let res = parse_positive_int("3");
+    assert!(res.is_ok());
+    assert_eq!(res.unwrap(), 3);
+
+    let res = parse_positive_int("foo");
+    assert!(res.is_err());
+    assert_eq!(res.unwrap_err().to_string(), "foo".to_owned());
+
+    let res = parse_positive_int("0");
+    assert!(res.is_err());
+    assert_eq!(res.unwrap_err().to_string(), "0".to_owned());
 }
