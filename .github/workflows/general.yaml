@@ -29,11 +29,11 @@ jobs:
       - name: Add tree
         run: sudo apt-get update && sudo apt-get install -y tree
 
-      - name: Print tree
-        run: tree
-
       - name: Create expected files
         run: ./crates/cat/scripts/mk-outs.sh
+
+      - name: Print tree
+        run: tree
 
       - name: Run tests
         run: cargo test
