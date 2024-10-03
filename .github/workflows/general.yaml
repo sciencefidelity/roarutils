@@ -27,7 +27,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Create mock files
-        run: ./crates/head/scripts/mk-outs.sh
+        run: ./crates/cat/scripts/mk-outs.sh
 
       - name: Run tests
         run: cargo test
