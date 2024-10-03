@@ -1,5 +1,5 @@
 #![allow(dead_code, clippy::missing_errors_doc, clippy::missing_panics_doc)]
-use std::io::{self, BufRead, BufReader};
+use std::io::{self, BufRead, BufReader, Read};
 use std::{error::Error, fs::File};
 
 use clap::{value_parser, Arg, Command};
@@ -15,20 +15,37 @@ pub struct Config {
 }
 
 pub fn run(config: Config) -> HeadResult<()> {
-    for filename in config.files {
+    let num_files = config.files.len();
+
+    for (file_num, filename) in config.files.iter().enumerate() {
         match open(&filename) {
-            Err(err) => eprintln!("{filename}: {err}"),
-            Ok(_file) => println!("Opened {}", filename),
+            Err(_) => {
+                eprintln!("head: cannot open '{filename}' for reading: No such file or directory")
+            }
+            Ok(mut file) => {
+                if num_files > 1 {
+                    println!("{}==> {filename} <==", if file_num > 0 { "\n" } else { "" });
+                }
+                if let Some(num_bytes) = config.bytes {
+                    let mut handle = file.take(num_bytes);
+                    let mut buffer = vec![0; num_bytes as usize];
+                    let n = handle.read(&mut buffer)?;
+                    print!("{}", String::from_utf8_lossy(&buffer[..n]));
+                } else {
+                    let mut line = String::new();
+                    for _ in 0..config.lines {
+                        let bytes = file.read_line(&mut line)?;
+                        if bytes == 0 {
+                            break;
+                        }
+                        print!("{line}");
+                        line.clear();
+                    }
+                }
+            }
         }
     }
     Ok(())
-}
-
-fn parse_positive_int(val: &str) -> HeadResult<usize> {
-    match val.parse() {
-        Ok(0) | Err(_) => Err(val.into()),
-        Ok(n) => Ok(n),
-    }
 }
 
 #[must_use]
@@ -69,6 +86,7 @@ pub fn get_args() -> Config {
             Arg::new("bytes")
                 .short('c')
                 .long("bytes")
+                .value_name("BYTES")
                 .help(indoc! {"
                     print the first NUM bytes of each file;
                       with the leading '-', print all but the last
@@ -115,17 +133,24 @@ fn open(filename: &str) -> HeadResult<Box<dyn BufRead>> {
     }
 }
 
-#[test]
-fn test_parse_positive_int() {
-    let res = parse_positive_int("3");
-    assert!(res.is_ok());
-    assert_eq!(res.unwrap(), 3);
+// fn parse_positive_int(val: &str) -> HeadResult<usize> {
+//     match val.parse() {
+//         Ok(0) | Err(_) => Err(val.into()),
+//         Ok(n) => Ok(n),
+//     }
+// }
 
-    let res = parse_positive_int("foo");
-    assert!(res.is_err());
-    assert_eq!(res.unwrap_err().to_string(), "foo".to_owned());
-
-    let res = parse_positive_int("0");
-    assert!(res.is_err());
-    assert_eq!(res.unwrap_err().to_string(), "0".to_owned());
-}
+// #[test]
+// fn test_parse_positive_int() {
+//     let res = parse_positive_int("3");
+//     assert!(res.is_ok());
+//     assert_eq!(res.unwrap(), 3);
+//
+//     let res = parse_positive_int("foo");
+//     assert!(res.is_err());
+//     assert_eq!(res.unwrap_err().to_string(), "foo".to_owned());
+//
+//     let res = parse_positive_int("0");
+//     assert!(res.is_err());
+//     assert_eq!(res.unwrap_err().to_string(), "0".to_owned());
+// }

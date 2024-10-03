@@ -36,13 +36,11 @@ fn gen_bad_file() -> String {
 #[test]
 fn dies_bad_bytes() -> Result<()> {
     let bad = random_string();
-    let expected = format!(
-        "invalid value '{bad}' for \
-        '--bytes <BYTES>': invalid digit found in string"
-    );
+    let expected =
+        format!("invalid value '{bad}' for '--bytes <BYTES>': invalid digit found in string");
 
     Command::cargo_bin(PRG)?
-        .args(["--c", &bad, EMPTY])
+        .args(["-c", &bad, EMPTY])
         .assert()
         .failure()
         .stderr(predicate::str::contains(expected));
@@ -52,8 +50,7 @@ fn dies_bad_bytes() -> Result<()> {
 
 #[test]
 fn dies_bad_lines() -> Result<()> {
-    let msg = "the argument '--lines <LINES>' cannot be \
-               used with '--bytes <BYTES>'";
+    let msg = "the argument '--lines <LINES>' cannot be used with '--bytes <BYTES>'";
 
     Command::cargo_bin(PRG)?
         .args(["-n", "1", "-c", "2"])
@@ -67,7 +64,7 @@ fn dies_bad_lines() -> Result<()> {
 #[test]
 fn skips_bad_file() -> Result<()> {
     let bad = gen_bad_file();
-    let expected = format!("{bad}: .* [(]os error 2 [)]");
+    let expected = format!("head: cannot open '{bad}' for reading: No such file or directory");
     Command::cargo_bin(PRG)?
         .args([EMPTY, &bad, ONE])
         .assert()
