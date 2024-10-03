@@ -14,13 +14,13 @@ pub struct Config {
     bytes: Option<u64>,
 }
 
-pub fn run(config: Config) -> HeadResult<()> {
+pub fn run(config: &Config) -> HeadResult<()> {
     let num_files = config.files.len();
 
     for (file_num, filename) in config.files.iter().enumerate() {
-        match open(&filename) {
+        match open(filename) {
             Err(_) => {
-                eprintln!("head: cannot open '{filename}' for reading: No such file or directory")
+                eprintln!("head: cannot open '{filename}' for reading: No such file or directory");
             }
             Ok(mut file) => {
                 if num_files > 1 {
@@ -28,7 +28,7 @@ pub fn run(config: Config) -> HeadResult<()> {
                 }
                 if let Some(num_bytes) = config.bytes {
                     let mut handle = file.take(num_bytes);
-                    let mut buffer = vec![0; num_bytes as usize];
+                    let mut buffer = vec![0; usize::try_from(num_bytes).expect("integer overflow")];
                     let n = handle.read(&mut buffer)?;
                     print!("{}", String::from_utf8_lossy(&buffer[..n]));
                 } else {
