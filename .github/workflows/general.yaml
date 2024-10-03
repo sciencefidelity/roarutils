@@ -26,6 +26,12 @@ jobs:
       - name: Rust Cache Action
         uses: Swatinem/rust-cache@v2
 
+      - name: Add tree
+        run: sudo apt tree
+
+      - name: Print tree
+        run: tree
+
       - name: Create expected files
         run: ./crates/cat/scripts/mk-outs.sh
 
