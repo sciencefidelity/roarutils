@@ -26,6 +26,9 @@ jobs:
       - name: Rust Cache Action
         uses: Swatinem/rust-cache@v2
 
+      - name: Create expected files
+        run: ./crates/cat/scripts/mk-outs.sh
+
       - name: Run tests
         run: cargo test
 
