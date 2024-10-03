@@ -27,7 +27,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Add tree
-        run: sudo apt tree
+        run: sudo apt-get update && sudo apt-get install -y tree
 
       - name: Print tree
         run: tree
