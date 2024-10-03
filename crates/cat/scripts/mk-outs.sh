@@ -2,8 +2,8 @@
 
 set -u
 
-ROOT="tests/inputs"
-OUT_DIR="tests/expected"
+ROOT="crates/cat/tests/inputs"
+OUT_DIR="crates/cat/tests/expected-a"
 
 [[ ! -d "$OUT_DIR" ]] && mkdir -p "$OUT_DIR"
 
