@@ -132,25 +132,3 @@ fn open(filename: &str) -> HeadResult<Box<dyn BufRead>> {
         _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
     }
 }
-
-// fn parse_positive_int(val: &str) -> HeadResult<usize> {
-//     match val.parse() {
-//         Ok(0) | Err(_) => Err(val.into()),
-//         Ok(n) => Ok(n),
-//     }
-// }
-
-// #[test]
-// fn test_parse_positive_int() {
-//     let res = parse_positive_int("3");
-//     assert!(res.is_ok());
-//     assert_eq!(res.unwrap(), 3);
-//
-//     let res = parse_positive_int("foo");
-//     assert!(res.is_err());
-//     assert_eq!(res.unwrap_err().to_string(), "foo".to_owned());
-//
-//     let res = parse_positive_int("0");
-//     assert!(res.is_err());
-//     assert_eq!(res.unwrap_err().to_string(), "0".to_owned());
-// }
