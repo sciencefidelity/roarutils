@@ -9,7 +9,7 @@ use indoc::indoc;
 
 type WcResult<T> = Result<T, Box<dyn Error>>;
 
-#[allow(dead_code)]
+#[allow(dead_code, clippy::struct_excessive_bools)]
 #[derive(Debug)]
 pub struct Config {
     files: Vec<String>,
@@ -19,6 +19,9 @@ pub struct Config {
     chars: bool,
 }
 
+/// # Errors
+///
+/// Will return `Err` if a file does not exist.
 pub fn run(config: &Config) -> WcResult<()> {
     for filename in &config.files {
         match open(filename) {
@@ -29,6 +32,8 @@ pub fn run(config: &Config) -> WcResult<()> {
     Ok(())
 }
 
+// arg FILE has a default value so cannot panic.
+#[allow(clippy::missing_panics_doc)]
 #[must_use]
 pub fn get_args() -> Config {
     let matches = Command::new("wc")
