@@ -486,6 +486,8 @@ dependencies = [
  "clap",
  "indoc",
  "predicates",
+ "pretty_assertions",
+ "rand",
 ]
 
 [[package]]

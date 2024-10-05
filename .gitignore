@@ -1,4 +1,5 @@
 /target
 /.direnv
 .env
-cat/tests/expected
+/cat/tests/expected
+/wc/tests/expected

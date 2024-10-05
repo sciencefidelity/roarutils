@@ -1,5 +1,11 @@
 [workspace]
-members = ["crates/cat", "crates/echo", "crates/head", "crates/true", "crates/wc"]
+members = [
+  "crates/cat",
+  "crates/echo",
+  "crates/head",
+  "crates/true",
+  "crates/wc",
+]
 resolver = "2"
 
 [workspace.package]
