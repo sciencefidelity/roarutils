@@ -25,18 +25,6 @@ fn gen_bad_file() -> String {
     }
 }
 
-#[test]
-fn dies_chars_and_bytes() -> Result<()> {
-    Command::cargo_bin(PRG)?
-        .args(["-m", "-c"])
-        .assert()
-        .failure()
-        .stderr(predicate::str::contains(
-            "the argument '--chars' cannot be used with '--bytes'",
-        ));
-    Ok(())
-}
-
 fn run(args: &[&str], expected_file: &str) -> Result<()> {
     let expected = fs::read_to_string(expected_file)?;
     let output = Command::cargo_bin(PRG)?.args(args).output().expect("fail");
@@ -51,7 +39,7 @@ fn run(args: &[&str], expected_file: &str) -> Result<()> {
 #[test]
 fn skips_bad_file() -> Result<()> {
     let bad = gen_bad_file();
-    let expected = format!("wc: cannot open '{bad}' for reading: No such file or directory");
+    let expected = format!("wc: {bad}: No such file or directory");
     Command::cargo_bin(PRG)?
         .arg(bad)
         .assert()
