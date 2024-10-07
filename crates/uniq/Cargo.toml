@@ -16,7 +16,9 @@ clap = { version = "4", features = ["derive"] }
 indoc = "2"
 
 [dev-dependencies]
+anyhow = "1"
 assert_cmd = "2"
 predicates = "3"
 pretty_assertions = "1"
 rand = "0.8"
+tempfile = "3"
