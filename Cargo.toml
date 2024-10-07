@@ -4,6 +4,7 @@ members = [
   "crates/echo",
   "crates/head",
   "crates/true",
+  "crates/uniq",
   "crates/wc",
 ]
 resolver = "2"
