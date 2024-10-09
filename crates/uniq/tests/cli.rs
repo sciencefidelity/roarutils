@@ -1,3 +1,4 @@
+#![allow(clippy::unwrap_used)]
 use anyhow::Result;
 use assert_cmd::Command;
 use predicates::prelude::*;
@@ -12,7 +13,7 @@ struct Test {
     out_count: &'static str,
 }
 
-const PRG: &str = "uniqr";
+const PRG: &str = "uniq";
 
 const EMPTY: Test = Test {
     input: "tests/inputs/empty.txt",
