@@ -1,11 +1,10 @@
 #![allow(dead_code, clippy::missing_errors_doc, clippy::missing_panics_doc)]
+use std::fs::File;
 use std::io::{self, BufRead, BufReader, Read};
-use std::{error::Error, fs::File};
 
+use anyhow::Result;
 use clap::{value_parser, Arg, Command};
 use indoc::indoc;
-
-type HeadResult<T> = Result<T, Box<dyn Error>>;
 
 #[derive(Debug)]
 pub struct Config {
@@ -14,7 +13,7 @@ pub struct Config {
     bytes: Option<u64>,
 }
 
-pub fn run(config: &Config) -> HeadResult<()> {
+pub fn run(config: &Config) -> Result<()> {
     let num_files = config.files.len();
 
     for (file_num, filename) in config.files.iter().enumerate() {
@@ -46,6 +45,13 @@ pub fn run(config: &Config) -> HeadResult<()> {
         }
     }
     Ok(())
+}
+
+fn open(filename: &str) -> Result<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
+    }
 }
 
 #[must_use]
@@ -123,12 +129,5 @@ pub fn get_args() -> Config {
         files,
         lines,
         bytes,
-    }
-}
-
-fn open(filename: &str) -> HeadResult<Box<dyn BufRead>> {
-    match filename {
-        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
-        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
     }
 }

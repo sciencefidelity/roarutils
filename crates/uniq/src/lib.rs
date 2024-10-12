@@ -59,7 +59,7 @@ pub fn run(args: &Args) -> Result<()> {
     Ok(())
 }
 
-// arg FILE has a default value so cannot panic.
+// FILE has a default value so cannot panic.
 #[allow(clippy::missing_panics_doc)]
 #[must_use]
 pub fn get_args() -> Args {

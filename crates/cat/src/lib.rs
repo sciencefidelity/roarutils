@@ -1,11 +1,10 @@
 #![allow(dead_code)]
+use std::fs::File;
 use std::io::{self, BufRead, BufReader};
-use std::{error::Error, fs::File};
 
+use anyhow::Result;
 use clap::{Arg, ArgAction, Command};
 use indoc::indoc;
-
-type CatResult<T> = Result<T, Box<dyn Error>>;
 
 #[allow(clippy::struct_excessive_bools)]
 #[derive(Debug)]
@@ -21,7 +20,7 @@ pub struct Config {
 /// # Errors
 ///
 /// Will return `Err` if the file(s) fail to open.
-pub fn run(config: Config) -> CatResult<()> {
+pub fn run(config: Config) -> Result<()> {
     let mut line_num = 0;
     for filename in config.files {
         match open(&filename) {
@@ -55,6 +54,13 @@ pub fn run(config: Config) -> CatResult<()> {
     Ok(())
 }
 
+fn open(filename: &str) -> Result<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
+    }
+}
+
 /// # Errors
 ///
 /// Cannot return error.
@@ -63,7 +69,7 @@ pub fn run(config: Config) -> CatResult<()> {
 ///
 /// Will panic if required args are missing.
 #[allow(clippy::too_many_lines)]
-pub fn get_args() -> CatResult<Config> {
+pub fn get_args() -> Result<Config> {
     let matches = Command::new("cat")
         .version("0.1.0")
         .author("Matt Cook <matt@mattcook.dev>")
@@ -174,11 +180,4 @@ pub fn get_args() -> CatResult<Config> {
         show_nonprinting: matches.get_flag("show_nonprinting"),
         show_tabs: matches.get_flag("show_tabs"),
     })
-}
-
-fn open(filename: &str) -> CatResult<Box<dyn BufRead>> {
-    match filename {
-        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
-        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
-    }
 }

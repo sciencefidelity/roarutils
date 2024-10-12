@@ -1,10 +1,9 @@
 use std::io::{self, BufRead, BufReader};
 use std::{error::Error, fs::File};
 
+use anyhow::Result;
 use clap::{Arg, ArgAction, Command};
 use indoc::indoc;
-
-type WcResult<T> = Result<T, Box<dyn Error>>;
 
 #[allow(dead_code, clippy::struct_excessive_bools)]
 #[derive(Debug)]
@@ -19,7 +18,7 @@ pub struct Config {
 /// # Errors
 ///
 /// Will return `Err` if a file does not exist.
-pub fn run(config: &Config) -> WcResult<()> {
+pub fn run(config: &Config) -> Result<()> {
     let mut results = Vec::with_capacity(config.files.len());
     let mut tab_size = 0;
     for filename in &config.files {
@@ -70,7 +69,7 @@ pub fn count<'a>(
     mut file: impl BufRead,
     filename: &'a str,
     config: &'a Config,
-) -> WcResult<(&'a str, Vec<usize>, usize)> {
+) -> Result<(&'a str, Vec<usize>, usize)> {
     let mut num_lines = 0;
     let mut num_words = 0;
     let mut num_bytes = 0;
@@ -127,6 +126,13 @@ const fn count_digits(n: usize) -> usize {
         9
     } else {
         10
+    }
+}
+
+fn open(filename: &str) -> Result<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
     }
 }
 
@@ -218,13 +224,6 @@ pub fn get_args() -> Config {
         words,
         bytes,
         chars,
-    }
-}
-
-fn open(filename: &str) -> WcResult<Box<dyn BufRead>> {
-    match filename {
-        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
-        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
     }
 }
 
