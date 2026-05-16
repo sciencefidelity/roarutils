@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, Write};
 
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use clap::{Arg, ArgAction, Command};
 use indoc::indoc;
 
@@ -31,7 +31,7 @@ pub fn run(args: &Args) -> Result<()> {
             } else {
                 write!(out_file, "{text}")?;
             }
-        };
+        }
         Ok(())
     };
 

@@ -4,7 +4,7 @@ use anyhow::Result;
 use assert_cmd::Command;
 use predicates::prelude::*;
 use pretty_assertions::assert_eq;
-use rand::{distributions::Alphanumeric, Rng};
+use rand::{Rng, distributions::Alphanumeric};
 use serial_test::serial;
 
 const PRG: &str = "find";
@@ -60,13 +60,13 @@ fn dies_bad_type() -> Result<()> {
 }
 
 #[cfg(windows)]
-fn format_file_name(expected_file: &str) -> Cow<str> {
+fn format_file_name(expected_file: &str) -> Cow<'_, str> {
     // Equivalent to: Cow::Owned(format!("{expected_file}.windows"))
     format!("{expected_file}.windows").into()
 }
 
 #[cfg(not(windows))]
-fn format_file_name(expected_file: &str) -> Cow<str> {
+fn format_file_name(expected_file: &str) -> Cow<'_, str> {
     // Equivalent to: Cow::Borrowed(expected_file)
     expected_file.into()
 }
