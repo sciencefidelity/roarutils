@@ -1,11 +1,11 @@
+use std::fs::File;
 use std::io::{self, BufRead, BufReader};
-use std::{error::Error, fs::File};
 
 use anyhow::Result;
 use clap::{Arg, ArgAction, Command};
 use indoc::indoc;
 
-#[allow(dead_code, clippy::struct_excessive_bools)]
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug)]
 pub struct Config {
     files: Vec<String>,

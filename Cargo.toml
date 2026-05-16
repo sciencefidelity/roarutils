@@ -2,6 +2,7 @@
 members = [
   "crates/cat",
   "crates/echo",
+  "crates/find",
   "crates/head",
   "crates/true",
   "crates/uniq",

@@ -1,7 +1,5 @@
-use std::{
-    fs::{self, File},
-    io::Read,
-};
+use std::fs::{self, File};
+use std::io::Read;
 
 use anyhow::Result;
 
