@@ -3,7 +3,7 @@ use std::fs;
 use anyhow::Result;
 use assert_cmd::Command;
 use predicates::prelude::*;
-use rand::{distributions::Alphanumeric, Rng};
+use rand::{Rng, distributions::Alphanumeric};
 
 const PRG: &str = "cat";
 const EMPTY: &str = "tests/inputs/empty.txt";

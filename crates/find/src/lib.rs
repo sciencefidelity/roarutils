@@ -1,7 +1,7 @@
 #![allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
 
 use anyhow::Result;
-use clap::{builder::PossibleValue, value_parser, Arg, ArgAction, Command, ValueEnum};
+use clap::{Arg, ArgAction, Command, ValueEnum, builder::PossibleValue, value_parser};
 use indoc::indoc;
 use regex::Regex;
 use walkdir::{DirEntry, WalkDir};

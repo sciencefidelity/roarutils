@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::{self, BufRead, BufReader, Read};
 
 use anyhow::Result;
-use clap::{value_parser, Arg, Command};
+use clap::{Arg, Command, value_parser};
 use indoc::indoc;
 
 #[derive(Debug)]
