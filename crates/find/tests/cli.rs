@@ -5,6 +5,7 @@ use assert_cmd::Command;
 use predicates::prelude::*;
 use pretty_assertions::assert_eq;
 use rand::{distributions::Alphanumeric, Rng};
+use serial_test::serial;
 
 const PRG: &str = "find";
 
@@ -22,6 +23,7 @@ fn gen_bad_file() -> String {
     }
 }
 
+#[serial]
 #[test]
 fn skips_bad_dir() -> Result<()> {
     let bad = gen_bad_file();
@@ -34,6 +36,7 @@ fn skips_bad_dir() -> Result<()> {
     Ok(())
 }
 
+#[serial]
 #[test]
 fn dies_bad_name() -> Result<()> {
     Command::cargo_bin(PRG)?
@@ -44,6 +47,7 @@ fn dies_bad_name() -> Result<()> {
     Ok(())
 }
 
+#[serial]
 #[test]
 fn dies_bad_type() -> Result<()> {
     let expected = "error: invalid value 'x' for '--type [<TYPE>...]'";
@@ -84,26 +88,31 @@ fn run(args: &[&str], expected_file: &str) -> Result<()> {
     Ok(())
 }
 
+#[serial]
 #[test]
 fn path1() -> Result<()> {
     run(&["tests/inputs"], "tests/expected/path1.txt")
 }
 
+#[serial]
 #[test]
 fn path_a() -> Result<()> {
     run(&["tests/inputs/a"], "tests/expected/path_a.txt")
 }
 
+#[serial]
 #[test]
 fn path_a_b() -> Result<()> {
     run(&["tests/inputs/a/b"], "tests/expected/path_a_b.txt")
 }
 
+#[serial]
 #[test]
 fn path_d() -> Result<()> {
     run(&["tests/inputs/d"], "tests/expected/path_d.txt")
 }
 
+#[serial]
 #[test]
 fn path_a_b_d() -> Result<()> {
     run(
@@ -112,11 +121,13 @@ fn path_a_b_d() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn type_f() -> Result<()> {
     run(&["tests/inputs", "-t", "f"], "tests/expected/type_f.txt")
 }
 
+#[serial]
 #[test]
 fn type_f_path_a() -> Result<()> {
     run(
@@ -125,6 +136,7 @@ fn type_f_path_a() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn type_f_path_a_b() -> Result<()> {
     run(
@@ -133,6 +145,7 @@ fn type_f_path_a_b() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn type_f_path_d() -> Result<()> {
     run(
@@ -141,6 +154,7 @@ fn type_f_path_d() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn type_f_path_a_b_d() -> Result<()> {
     run(
@@ -149,11 +163,13 @@ fn type_f_path_a_b_d() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn type_d() -> Result<()> {
     run(&["tests/inputs", "-t", "d"], "tests/expected/type_d.txt")
 }
 
+#[serial]
 #[test]
 fn type_d_path_a() -> Result<()> {
     run(
@@ -162,6 +178,7 @@ fn type_d_path_a() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn type_d_path_a_b() -> Result<()> {
     run(
@@ -170,6 +187,7 @@ fn type_d_path_a_b() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn type_d_path_d() -> Result<()> {
     run(
@@ -178,6 +196,7 @@ fn type_d_path_d() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn type_d_path_a_b_d() -> Result<()> {
     run(
@@ -186,11 +205,13 @@ fn type_d_path_a_b_d() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn type_l() -> Result<()> {
     run(&["tests/inputs", "-t", "l"], "tests/expected/type_l.txt")
 }
 
+#[serial]
 #[test]
 fn type_f_l() -> Result<()> {
     run(
@@ -199,6 +220,7 @@ fn type_f_l() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn name_csv() -> Result<()> {
     run(
@@ -207,6 +229,7 @@ fn name_csv() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn name_csv_mp3() -> Result<()> {
     run(
@@ -215,6 +238,7 @@ fn name_csv_mp3() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn name_txt_path_a_d() -> Result<()> {
     run(
@@ -223,11 +247,13 @@ fn name_txt_path_a_d() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn name_a() -> Result<()> {
     run(&["tests/inputs", "-n", "a"], "tests/expected/name_a.txt")
 }
 
+#[serial]
 #[test]
 fn type_f_name_a() -> Result<()> {
     run(
@@ -236,6 +262,7 @@ fn type_f_name_a() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn type_d_name_a() -> Result<()> {
     run(
@@ -244,11 +271,13 @@ fn type_d_name_a() -> Result<()> {
     )
 }
 
+#[serial]
 #[test]
 fn path_g() -> Result<()> {
     run(&["tests/inputs/g.csv"], "tests/expected/path_g.txt")
 }
 
+#[serial]
 #[test]
 #[cfg(not(windows))]
 fn unreadable_dir() -> Result<()> {

@@ -1,8 +1,10 @@
 #![allow(clippy::missing_errors_doc, clippy::missing_panics_doc)]
+
 use anyhow::Result;
 use clap::{builder::PossibleValue, value_parser, Arg, ArgAction, Command, ValueEnum};
 use indoc::indoc;
 use regex::Regex;
+use walkdir::{DirEntry, WalkDir};
 
 #[allow(unused)]
 #[derive(Debug)]
@@ -33,13 +35,47 @@ impl ValueEnum for EntryType {
     }
 }
 
-pub fn run(config: &Args) -> Result<()> {
-    println!("{config:?}");
+pub fn run(args: Args) -> Result<()> {
+    let type_filter = |entry: &DirEntry| {
+        args.entry_types.is_empty()
+            || args.entry_types.iter().any(|entry_type| match entry_type {
+                EntryType::Link => entry.file_type().is_symlink(),
+                EntryType::Dir => entry.file_type().is_dir(),
+                EntryType::File => entry.file_type().is_file(),
+            })
+    };
+
+    let name_filter = |entry: &DirEntry| {
+        args.names.is_empty()
+            || args
+                .names
+                .iter()
+                .any(|re| re.is_match(&entry.file_name().to_string_lossy()))
+    };
+
+    for path in &args.paths {
+        let entries = WalkDir::new(path)
+            .into_iter()
+            .filter_map(|e| match e {
+                Err(e) => {
+                    eprintln!("{e}");
+                    None
+                }
+                Ok(entry) => Some(entry),
+            })
+            .filter(type_filter)
+            .filter(name_filter)
+            .map(|entry| entry.path().display().to_string())
+            .collect::<Vec<_>>();
+
+        println!("{}", entries.join("\n"));
+    }
+
     Ok(())
 }
 
 pub fn get_args() -> Args {
-    let matches = Command::new("uniq")
+    let matches = Command::new("find")
         .version("0.1.0")
         .author("Matt Cook <matt@mattcook.dev")
         .about(indoc! {"
